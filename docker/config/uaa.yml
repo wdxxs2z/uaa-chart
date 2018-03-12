@@ -1,0 +1,250 @@
+
+---
+name: uaa
+disableInternalAuth: false
+disableInternalUserManagement: false
+issuer:
+  uri: https://uaa.${EXTERNAL_URL}
+spring_profiles: mysql
+database:
+  url: jdbc:mysql://${MYSQL_URL}:${MYSQL_PORT}/${MYSQL_DB_NAME}
+  username: ${MYSQL_USERNAME}
+  password: ${MYSQL_PASSWORD}
+  maxactive: 100
+  maxidle: 10
+  minidle: 0
+  removeabandoned: false
+  logabandoned: true
+  abandonedtimeout: 300
+authentication:
+  policy:
+    lockoutAfterFailures: 5
+    countFailuresWithinSeconds: 1200
+    lockoutPeriodSeconds: 300
+    global:
+      lockoutAfterFailures: 5
+      countFailuresWithinSeconds: 3600
+      lockoutPeriodSeconds: 300
+password:
+  policy:
+    minLength: 0
+    maxLength: 255
+    requireUpperCaseCharacter: 0
+    requireLowerCaseCharacter: 0
+    requireDigit: 0
+    requireSpecialCharacter: 0
+    expirePasswordInMonths: 0
+    global:
+      minLength: 0
+      maxLength: 255
+      requireUpperCaseCharacter: 0
+      requireLowerCaseCharacter: 0
+      requireDigit: 0
+      requireSpecialCharacter: 0
+      expirePasswordInMonths: 0
+zones:
+  internal:
+    hostnames:
+    - uaa.${INTERNAL_URL}
+jwt:
+  token:
+    queryString:
+      enabled: true
+    revocable: false
+    policy:
+      accessTokenValiditySeconds: 43200
+      refreshTokenValiditySeconds: 2592000
+      global:
+        accessTokenValiditySeconds: 43200
+        refreshTokenValiditySeconds: 2592000
+      activeKeyId: key-1
+      keys:
+        key-1:
+          signingKey: |
+            -----BEGIN RSA PRIVATE KEY-----
+            MIIEowIBAAKCAQEAwCDceb89SvGbTqRT2MFc5J9MPwRL16IvB3p+Z4aSyFHHUM6p
+            SlX04MfUc7wML+kCdOcmUisdY5+GEikGw5G/o7fkN6f3ZWRXEGwCrNQwPp1e7utf
+            SqxabSYBTki0PBlkoCIBy2Kx/9kVDexq4AC2TcHgYvDbZ33jtbtJLkeT17Bqo0TA
+            ES7efLQBUzJjgjvheZnesGAl49Hu+DjrjNVVukHKH5ni15VJIMD3v2mN/5AM3uuv
+            SIv/IEgEkhgD8IWtOKOtIMFUPwCgFAODCiz220YubuQrB4H4d182mxqex4wYxTyW
+            f8NRD6QnTazwhm8MxdSC+Bf5BjTEGiYLGLuT5QIDAQABAoIBAE/LliZOghNlQz6n
+            S1ej/4PIkW8+xo0Zg/TUMDmpD795D5IFMxR3nMva0ub6fAlN+kI5WpYX6A3fTFyw
+            g2moV/KURonDDiIjSXG9mmLTgfIPhEUwppQp/yiD91jfI1Quq7dCSIKDTDBZpb/x
+            p/W+9fhXhG0zYbya8X8h+OPqwIF8wJWcucTOd02Vx9FXsy+dhZgnT1EmAEfdR6jR
+            7g5s1PrVmn9IIkx0AKQf+nbY8oDQ4S2eRZO18sHjVNp4XscWL0+6NU455riRSk5T
+            lX2kCEWrJLPnEo7QgLf2O7fsGiqCU0BjhcQWn6cuUkyNNf1+Z4kjnBnsslpV0qLs
+            6MreXcUCgYEA44KwVv23zEvdTUgxbeUlAEvyzhGCEGDdYEJr53p4GzJRMsYvc0eg
+            SiccO53nxZ90AFPOh5Gzx1OzIGxLivB8KHhLzeC46Gn5fZTNY2SME05VJj46sUoc
+            etDXYg3hEbGJX432oAJi/TWvjTaJ9gY/aW0DJtNeo6AXtWRshusR4acCgYEA2C/t
+            FDx1zOInbwbJDMtibfe+MBhvooGO3RLEAcOdkz5zl9IUFzRUKpEqLf3niMLLb+eU
+            3zzrjPb4UOIKpefY7XXPxOlX4HYoVhaIWt6QBrNZM0/+Kj0guXQqjXTR7IFdxwaC
+            bWmmYT8IiVJ1tf7+HCuddbYOD/gsrgR1t4hnF5MCgYBfOszlHL5aXUb8mkNWZJvg
+            S+oOJ3XxtRn0uNjBw5mSiLVEM4CZGFoXr9c5fRcOuXesy2efh3Vg8cAAylO0jITr
+            y66vNmkvn2w3DJoMCII5cohhwZp/qy3QmqoM+RJEfbOqs5mP0G/u3RHmYfXNbUAN
+            uPugvMjYZKKH4skqkCqj8QKBgQCIlF63disGMaqwHh1Ok/+vceEaCZYdmLRlPsHO
+            S4N1zvLAa9x9fHXgHq4DOHHamRZlsG0BTD+UY0Ml9mi7v+nwu4lz4ee+y2dYXAvx
+            PMLJOO2V2We9z7io8ZcgnzkwrdpNLvOfpCuVLHl8KDhtrpdjvLpR756awDOaDP9B
+            4E8hOQKBgC8G6Ghj5BY/8AjXxgpZkSfIcVFeop+Z3eETvYNiCLma4vCD8iOFnmVS
+            7v5p4dyv1TiSOnPcN5wev3eJalQXCzOwF7NoUKjxR+UcikgYoiUt7G2KkS38IGTR
+            /7NEab7dkWcA0RQipaGG19VrxjP5QNgTOnxAdmZhkHCgIYPf521u
+            -----END RSA PRIVATE KEY-----
+    refresh:
+      restrict_grant: false
+      unique: false
+      format: jwt
+oauth:
+  clients:
+    kubernetes:
+      access-token-validity: 14400
+      authorities: uaa.none
+      authorized-grant-types: password,refresh_token,authorization_code,client_credentials
+      id: kubernetes
+      override: true
+      refresh-token-validity: 1209600
+      scope: openid,password.write,scim.read,scim.write,uaa.user
+      secret: '${KUBERNETES_CLIENT_SECRET}'
+    login:
+      authorities: oauth.login,scim.write,clients.read,notifications.write,critical_notifications.write,emails.write,scim.userids,password.write
+      authorized-grant-types: client_credentials,refresh_token
+      autoapprove: true
+      id: login
+      override: true
+      scope: openid,oauth.approvals
+      secret: ${LOGIN_CLIENT_SECRET}
+    admin:
+      authorized-grant-types: client_credentials
+      authorities: clients.read,clients.write,clients.secret,uaa.admin,scim.read,scim.write,password.write
+      id: admin
+      secret: ${ADMIN_CLIENT_SECRET}
+  user:
+    authorities:
+    - openid
+    - scim.me
+    - password.write
+    - uaa.user
+    - approvals.me
+    - oauth.approvals
+    - notification_preferences.read
+    - notification_preferences.write
+    - profile
+    - roles
+    - user_attributes
+    - uaa.offline_token
+    - actuator.read
+  authorize:
+    ssl: true
+  client:
+    secret:
+      policy:
+        minLength: 0
+        maxLength: 255
+        requireUpperCaseCharacter: 0
+        requireLowerCaseCharacter: 0
+        requireDigit: 0
+        requireSpecialCharacter: 0
+        expireSecretInMonths: 0
+        global:
+          minLength: 0
+          maxLength: 255
+          requireUpperCaseCharacter: 0
+          requireLowerCaseCharacter: 0
+          requireDigit: 0
+          requireSpecialCharacter: 0
+          expireSecretInMonths: 0
+scim:
+  userids_enabled: true
+  user:
+    override: true
+  users:
+  - admin|${ADMIN_PASSWORD}|admin|||scim.write,scim.read,openid,dashboard.user,console.admin,console.support,emails.write,zones.read,zones.write
+  groups:
+    zones.read: Read identity zones
+    zones.write: Create and update identity zones
+    idps.read: Retrieve identity providers
+    idps.write: Create and update identity providers
+    clients.admin: Create, modify and delete OAuth clients
+    clients.write: Create and modify OAuth clients
+    clients.read: Read information about OAuth clients
+    clients.secret: Change the password of an OAuth client
+    scim.write: Create, modify and delete SCIM entities, i.e. users and groups
+    scim.read: Read all SCIM entities, i.e. users and groups
+    scim.create: Create users
+    scim.userids: Read user IDs and retrieve users by ID
+    scim.zones: Control a user's ability to manage a zone
+    scim.invite: Send invitations to users
+    password.write: Change your password
+    oauth.approval: Manage approved scopes
+    oauth.login: Authenticate users outside of the UAA
+    openid: Access profile information, i.e. email, first and last name, and phone number
+    groups.update: Update group information and memberships
+    uaa.user: Act as a user in the UAA
+    uaa.resource: Serve resources protected by the UAA
+    uaa.admin: Act as an administrator throughout the UAA
+    uaa.none: Forbid acting as a user
+require_https: true
+assetBaseUrl: "/resources/oss"
+uaa:
+  url: https://uaa.${EXTERNAL_URL}
+  limitedFunctionality:
+    enabled: false
+    whitelist:
+      endpoints:
+      - "/oauth/authorize/**"
+      - "/oauth/token/**"
+      - "/check_token/**"
+      - "/login/**"
+      - "/login.do"
+      - "/logout/**"
+      - "/logout.do"
+      - "/saml/**"
+      - "/autologin/**"
+      - "/authenticate/**"
+      - "/idp_discovery/**"
+      methods:
+      - GET
+      - HEAD
+      - OPTIONS
+login:
+  url: https://login.${EXTERNAL_URL}
+  idpDiscoveryEnabled: false
+  accountChooserEnabled: false
+  entityBaseURL: https://login.${EXTERNAL_URL}
+  entityID: http://login.${EXTERNAL_URL}
+  prompt:
+    username:
+      text: Email
+    password:
+      text: Password
+  authorize:
+    url: https://uaa.${EXTERNAL_URL}/oauth/authorize
+  saml:
+    socket:
+      connectionManagerTimeout: 10000
+      soTimeout: 10000
+    activeKeyId: key1
+    keys:
+      key1:
+        certificate: "${UAA_SAML_CERT}"
+        key: "${UAA_SAML_KEY}"
+        passphrase: ''
+    signMetaData: true
+    signRequest: true
+    wantAssertionSigned: false
+    disableInResponseToCheck: false
+    signatureAlgorithm: SHA256
+  branding:
+    companyName: kubernetes
+    productLogo: 
+    squareLogo: 
+  serviceProviderCertificate: ''
+  serviceProviderKey: ''
+  serviceProviderKeyPassword: ''
+  selfServiceLinksEnabled: true
+smtp:
+  host: localhost
+  port: 2525
+  user: 
+  password: 
+  from_address: 
+  auth: false
+  starttls: false
