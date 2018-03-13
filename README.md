@@ -1,0 +1,38 @@
+# UAA docker & chart repo
+
+## Docker ENV SET
+```
+ENV CLOUD_FOUNDRY_CONFIG_PATH /usr/local/uaa/config
+
+ENV CATALINA_OPTS "-Xmx768m -XX:MaxPermSize=256m"
+
+ENV EXTERNAL_URL "domain.io"
+
+ENV INTERNAL_URL "internal.io"
+
+ENV MYSQL_URL "127.0.0.1"
+
+ENV MYSQL_PORT 3306
+
+ENV MYSQL_DB_NAME uaa
+
+ENV MYSQL_USERNAME test
+
+ENV MYSQL_PASSWORD changeme
+
+ENV KUBERNETES_CLIENT_SECRET changeme
+
+ENV LOGIN_CLIENT_SECRET changeme
+
+ENV ADMIN_CLIENT_SECRET changeme
+
+ENV ADMIN_PASSWORD changeme
+
+ENV UAA_SAML_KEY ""
+
+ENV UAA_SAML_CERT ""
+
+ENV UAA_SSL true
+
+ENV UAA_LDAP_SSL false
+```

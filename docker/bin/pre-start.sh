@@ -3,6 +3,11 @@ set -e
 
 echo "uaa-pre-start - starting at `date`"
 
+if [ -f /.pre_start_created ]; then
+    echo "pre_start' already created"
+    exit 0
+fi
+
 CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 
 CONF_DIR=/usr/local/uaa/config
@@ -60,20 +65,22 @@ fi
 
 if [ $UAA_LDAP_SSL == 'true' ]; then
     echo "[uaa-pre-start] Installing LDAP certificate"
-    /usr/local/uaa/bin/install_crt ldap.crt ldapcert $TRUST_STORE_FILE
+    /usr/local/uaa/bin/install_crt /usr/local/uaa/config/ldap.crt ldapcert $TRUST_STORE_FILE
     echo "[uaa-pre-start] Installed LDAP certificate"
 fi
 
 # Install the server's ssl certificate
 if [ $UAA_SSL == 'true' ]; then
     echo "[uaa-pre-start] Installing Server SSL certificate"
-    /usr/local/uaa/bin/install_uaa_crt uaa.crt
+    /usr/local/uaa/bin/install_uaa_crt /usr/local/uaa/config/uaa.crt
     echo "[uaa-pre-start] Installed Server SSL certificate"
 fi
 
 cp $TRUST_STORE_FILE $CONF_DIR
 
 setup_directories
+
+touch /.pre_start_created
 
 echo "uaa-pre-start - completed at `date`"
 
