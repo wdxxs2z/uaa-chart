@@ -39,6 +39,10 @@ spec:
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: 60
           env:
+            - name: KUBERNETES_ENV
+              value: true
+            - name: UAA_SSL
+              value: true
             - name: CLOUD_FOUNDRY_CONFIG_PATH
               value: /usr/local/uaa/config
             - name: CATALINA_OPTS
