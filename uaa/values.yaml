@@ -1,0 +1,50 @@
+image:
+  repository: wdxxsez/uaa-chart 
+  tag: 4.10.0
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+service:
+  internalPort: 8443
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 1024Mi
+  requests:
+    cpu: 200m
+    memory: 1024Mi
+
+externalUrl: k8s.io
+
+datasource:
+  host: 127.0.0.1
+  port: 3306
+  dbname: uaa
+  username: admin
+  password: mypassword
+
+clients:
+  kubernetes:
+    secret: changeme
+  login:
+    secret: changeme
+  admin:
+    secret: changeme
+
+scim:
+  admin:
+    password: adminpassword
+
+uaa:
+  ssl:
+    enabled: true
+    saml:
+      cert: |
+        xxxxx 
+      key: |
+        xxxxx
+    client:
+      crt: |
+        xxxxx
