@@ -7,6 +7,8 @@ replicaCount: 1
 
 service:
   internalPort: 8443
+  externalPort: 8443
+  type: NodePort
 
 resources:
   limits:
@@ -17,6 +19,9 @@ resources:
     memory: 1024Mi
 
 externalUrl: k8s.io
+
+tomcat:
+  catalinaOpts: "-Xmx768m -XX:MaxPermSize=256m"
 
 datasource:
   host: 127.0.0.1
