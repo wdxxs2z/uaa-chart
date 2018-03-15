@@ -4,7 +4,7 @@ metadata:
   name: {{ template "uaa.fullname" . }}
   labels:
     app: {{ template "name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -12,59 +12,59 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
-        release: {{ .Release.Name }}
+        app: {{ template "uaa.fullname" . }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            limits:
-              cpu: {{ .Values.resources.limits.cpu }}
-              memory: {{ .Values.resources.limits.memory }}
-            requests:
-              cpu: {{ .Values.resources.requests.cpu }}
-              memory: {{ .Values.resources.requests.memory }}
-          ports:
-            - name: http
-              containerPort: 80
-            - name: https
-              containerPort: 443
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: http
-            initialDelaySeconds: 60
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: http
-            initialDelaySeconds: 60
-          env:
-            - name: KUBERNETES_ENV
-              value: true
-            - name: UAA_SSL
-              value: true
-            - name: CLOUD_FOUNDRY_CONFIG_PATH
-              value: /usr/local/uaa/config
-            - name: CATALINA_OPTS
-              value: {{ Values.tomcat.catalinaOpts }}
-            - name: SERVICE_NAME
-              value: {{ template "uaa.fullname" . }}
-          volumeMounts:
-            - mountPath: /usr/local/uaa/config
-              name: uaa-custom
-            - mountPath: /usr/local/uaa/config/tomcat
-              name: uaa-ca
-            - mountPath: /usr/local/uaa/config/ca
+      - name: {{ template "uaa.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: https
+          containerPort: 8443
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 60
+        env:
+        - name: KUBERNETES_ENV
+          value: "true"
+        - name: UAA_SSL
+          value: "true"
+        - name: CLOUD_FOUNDRY_CONFIG_PATH
+          value: "/usr/local/uaa/config"
+        - name: CATALINA_OPTS
+          value: "{{ .Values.tomcat.catalinaOpts }}"
+        - name: SERVICE_NAME
+          value: '{{ template "uaa.fullname" . }}'
+        volumeMounts:
+        - mountPath: /usr/local/uaa/config
+          name: uaa-custom
+        - mountPath: /usr/local/uaa/config/tomcat
+          name: uaa-tomcat
+        - mountPath: /usr/local/uaa/config/ca
+          name: uaa-ca
       volumes:
-        - name: uaa-custom
-          configMap:
-            name: {{ template "uaa.fullname" . }}-custom
-        - name: uaa-tomcat
-          configMap:
-            name: {{ template "uaa.fullname" . }}-tomcat
-        - name: uaa-ca
-          secret:
-            secretName: {{ template "uaa.fullname" . }}-ca
+      - name: uaa-custom
+        configMap:
+          name: {{ template "uaa.fullname" . }}-custom
+      - name: uaa-tomcat
+        configMap:
+          name: {{ template "uaa.fullname" . }}-tomcat
+      - name: uaa-ca
+        configMap:
+          name: {{ template "uaa.fullname" . }}-ca

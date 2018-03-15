@@ -27,7 +27,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "gitlab-ce.fullname" . }}
+          serviceName: {{ template "uaa.fullname" . }}
           servicePort: {{ .Values.httpPort }}
     {{- end }}
 

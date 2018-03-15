@@ -10,9 +10,11 @@ RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
 ADD http://central.maven.org/maven2/org/cloudfoundry/identity/cloudfoundry-identity-uaa/${UAA_VERSION}/cloudfoundry-identity-uaa-${UAA_VERSION}.war /usr/local/tomcat/webapps/ROOT.war
 
-ADD config /usr/local/uaa/
+RUN mkdir -p /usr/local/uaa/bin && mkdir -p /usr/local/uaa/config
 
-ADD bin /usr/local/uaa/
+ADD config/* /usr/local/uaa/config/
+
+ADD bin/* /usr/local/uaa/bin/
 
 EXPOSE 8080
 

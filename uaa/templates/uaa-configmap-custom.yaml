@@ -8,12 +8,12 @@ data:
     disableInternalAuth: false
     disableInternalUserManagement: false
     issuer:
-      uri: https://uaa.${{ Values.externalUrl }}
+      uri: https://uaa.${{ .Values.externalUrl }}
     spring_profiles: mysql
     database:
-      url: jdbc:mysql://{{ Values.datasource.host }}:{{ Values.datasource.port }}/{{ Values.datasource.dbname }}
-      username: {{ Values.datasource.username | b64enc }}
-      password: {{ Values.datasource.password | b64enc }}
+      url: jdbc:mysql://{{ .Values.datasource.host }}:{{ .Values.datasource.port }}/{{ .Values.datasource.dbname }}
+      username: {{ .Values.datasource.username | b64enc }}
+      password: {{ .Values.datasource.password | b64enc }}
       maxactive: 100
       maxidle: 10
       minidle: 0
@@ -119,7 +119,7 @@ data:
           authorized-grant-types: client_credentials
           authorities: openid,clients.read,clients.write,clients.secret,uaa.admin,scim.read,scim.write,password.write
           id: admin
-          secret: {{ Values.clients.admin.secret | b64enc }}
+          secret: {{ .Values.clients.admin.secret | b64enc }}
       user:
         authorities:
         - openid
@@ -188,7 +188,7 @@ data:
     require_https: true
     assetBaseUrl: "/resources/oss"
     uaa:
-      url: https://uaa.${{ Values.externalUrl }}
+      url: https://uaa.${{ .Values.externalUrl }}
       limitedFunctionality:
         enabled: false
         whitelist:
@@ -209,18 +209,18 @@ data:
           - HEAD
           - OPTIONS
     login:
-      url: https://login.{{ Values.externalUrl }}
+      url: https://login.{{ .Values.externalUrl }}
       idpDiscoveryEnabled: false
       accountChooserEnabled: false
-      entityBaseURL: https://login.{{ Values.externalUrl }}
-      entityID: http://login.{{ Values.externalUrl }}
+      entityBaseURL: https://login.{{ .Values.externalUrl }}
+      entityID: http://login.{{ .Values.externalUrl }}
       prompt:
         username:
           text: Email
         password:
           text: Password
       authorize:
-        url: https://uaa.{{ Values.externalUrl }}/oauth/authorize
+        url: https://uaa.{{ .Values.externalUrl }}/oauth/authorize
       saml:
         socket:
           connectionManagerTimeout: 10000
