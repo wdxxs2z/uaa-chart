@@ -8,7 +8,7 @@ data:
     disableInternalAuth: false
     disableInternalUserManagement: false
     issuer:
-      uri: https://uaa.${{ .Values.externalUrl }}
+      uri: https://uaa.{{ .Values.externalUrl }}
     spring_profiles: mysql
     database:
       url: jdbc:mysql://{{ .Values.datasource.host }}:{{ .Values.datasource.port }}/{{ .Values.datasource.dbname }}
@@ -188,7 +188,7 @@ data:
     require_https: true
     assetBaseUrl: "/resources/oss"
     uaa:
-      url: https://uaa.${{ .Values.externalUrl }}
+      url: https://uaa.{{ .Values.externalUrl }}
       limitedFunctionality:
         enabled: false
         whitelist:
@@ -228,10 +228,10 @@ data:
         activeKeyId: key1
         keys:
           key1:
-            certificate: |
-              {{ .Values.uaa.ssl.saml.cert | b64enc }}
-            key: |
-              {{ .Values.uaa.ssl.saml.key | b64enc }}
+            certificate:
+{{ toYaml .Values.uaa.ssl.saml.cert | indent 12 }}
+            key:
+{{ toYaml .Values.uaa.ssl.saml.key | indent 12 }}
             passphrase: ''
         signMetaData: true
         signRequest: true

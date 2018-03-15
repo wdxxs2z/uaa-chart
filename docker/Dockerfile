@@ -12,9 +12,11 @@ ADD http://central.maven.org/maven2/org/cloudfoundry/identity/cloudfoundry-ident
 
 RUN mkdir -p /usr/local/uaa/bin && mkdir -p /usr/local/uaa/config
 
-ADD config/* /usr/local/uaa/config/
+COPY config/* /usr/local/uaa/config/
 
-ADD bin/* /usr/local/uaa/bin/
+COPY bin/* /usr/local/uaa/bin/
+
+RUN chmod -R +x /usr/local/uaa/bin/*
 
 EXPOSE 8080
 
