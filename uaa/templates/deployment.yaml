@@ -30,16 +30,6 @@ spec:
           containerPort: 8080
         - name: https
           containerPort: 8443
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: http
-          initialDelaySeconds: 60
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: http
-          initialDelaySeconds: 60
         env:
         - name: KUBERNETES_ENV
           value: "true"
