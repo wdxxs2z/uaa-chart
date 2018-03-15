@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$KUBERNETES_ENV" = "false" || "$KUBERNETES_ENV" = "" ]; then
+if [ -z $KUBERNETES_ENV ]; then
     /usr/local/uaa/bin/job_properties.sh
 fi
 
