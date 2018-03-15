@@ -63,14 +63,14 @@ else
     process_certs
 fi
 
-if [ $UAA_LDAP_SSL == 'true' ]; then
+if [ "$UAA_LDAP_SSL" = "true" ]; then
     echo "[uaa-pre-start] Installing LDAP certificate"
     /usr/local/uaa/bin/install_crt /usr/local/uaa/config/ldap.crt ldapcert $TRUST_STORE_FILE
     echo "[uaa-pre-start] Installed LDAP certificate"
 fi
 
 # Install the server's ssl certificate
-if [ $UAA_SSL == 'true' ]; then
+if [ "$UAA_SSL" = "true" ]; then
     echo "[uaa-pre-start] Generate self pem"
     /usr/local/uaa/bin/generate_crt
     echo "[uaa-pre-start] Installing Server SSL certificate"
