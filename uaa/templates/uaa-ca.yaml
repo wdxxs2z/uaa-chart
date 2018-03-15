@@ -1,0 +1,15 @@
+{{- if and (.Values.uaa.ssl.enabled) -}}
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "uaa.fullname" . }}-ca
+data:
+  ca.key: {{ .Values.uaa.ssl.cakey }}
+  ca.crt: {{ .Values.uaa.ssl.cacert }}
+{{- end -}}

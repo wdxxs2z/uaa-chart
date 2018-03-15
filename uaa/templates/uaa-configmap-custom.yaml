@@ -228,8 +228,10 @@ data:
         activeKeyId: key1
         keys:
           key1:
-            certificate: "{{ .Values.uaa.ssl.saml.cert | b64enc }}"
-            key: "{{ .Values.uaa.ssl.saml.key | b64enc }}"
+            certificate: |
+              {{ .Values.uaa.ssl.saml.cert | b64enc }}
+            key: |
+              {{ .Values.uaa.ssl.saml.key | b64enc }}
             passphrase: ''
         signMetaData: true
         signRequest: true
@@ -252,5 +254,3 @@ data:
       from_address:
       auth: false
       starttls: false
-
-  uaa.crt: {{ .Values.uaa.ssl.client.crt | b64enc }}

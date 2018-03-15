@@ -1,33 +1,38 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "uaa.fullname" . }}-ingress
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "uaa.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "uaa.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
-{{- if .Values.ingress.tls }}
-    kubernetes.io/tls-acme: "true"
-{{- end }}
 spec:
-{{- if .Values.ingress.tls }}
-  tls:
-  - hosts:
-    - {{ .Values.host }}
-{{- if (ne "-" .Values.ingress.secretName) }}
-    secretName: {{ .Values.ingress.secretName | default (printf "%s-tls" (include "uaa.fullname" .)) }}
-{{- end }}
-{{- end }}
   rules:
-  - host: {{ .Values.host }}
-    http:
+  - host: {{ .Values.ingress.url | quote }}
+    {{- if (not (empty .Values.ingress.tls)) }}
+    https:
       paths:
       - path: /
         backend:
           serviceName: {{ template "uaa.fullname" . }}
-          servicePort: 8443
+          servicePort: {{ .Values.httpsPort }}
+    {{- else }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "gitlab-ce.fullname" . }}
+          servicePort: {{ .Values.httpPort }}
+    {{- end }}
+
+{{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end -}}
+{{- end }}

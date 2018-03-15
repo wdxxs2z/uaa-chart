@@ -8,10 +8,14 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.serviceType }}
   ports:
-    - port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
+    - port: {{ .Values.httpPort | int }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.httpsPort | int }}
+      targetPort: https
       protocol: TCP
       name: https
   selector:

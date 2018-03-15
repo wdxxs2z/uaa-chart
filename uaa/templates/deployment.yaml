@@ -19,8 +19,6 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.service.internalPort }}
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
@@ -28,15 +26,20 @@ spec:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
           livenessProbe:
             httpGet:
               path: /health
-              port: {{ .Values.service.internalPort }}
+              port: http
             initialDelaySeconds: 60
           readinessProbe:
             httpGet:
               path: /health
-              port: {{ .Values.service.internalPort }}
+              port: http
             initialDelaySeconds: 60
           env:
             - name: KUBERNETES_ENV
@@ -47,11 +50,14 @@ spec:
               value: /usr/local/uaa/config
             - name: CATALINA_OPTS
               value: {{ Values.tomcat.catalinaOpts }}
+            - name: SERVICE_NAME
+              value: {{ template "uaa.fullname" . }}
           volumeMounts:
             - mountPath: /usr/local/uaa/config
               name: uaa-custom
             - mountPath: /usr/local/uaa/config/tomcat
-              name: uaa-tomcat
+              name: uaa-ca
+            - mountPath: /usr/local/uaa/config/ca
       volumes:
         - name: uaa-custom
           configMap:
@@ -59,3 +65,6 @@ spec:
         - name: uaa-tomcat
           configMap:
             name: {{ template "uaa.fullname" . }}-tomcat
+        - name: uaa-ca
+          secret:
+            secretName: {{ template "uaa.fullname" . }}-ca
