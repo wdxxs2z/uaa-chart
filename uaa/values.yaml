@@ -19,11 +19,11 @@ tomcat:
   catalinaOpts: "-Xmx768m -XX:MaxPermSize=256m"
 
 datasource:
-  host: 127.0.0.1
+  host: database-mysql
   port: 3306
   dbname: uaa
   username: admin
-  password: mypassword
+  password: changeme
 
 ingress:
   annotations:

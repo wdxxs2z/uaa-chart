@@ -12,8 +12,8 @@ data:
     spring_profiles: mysql
     database:
       url: jdbc:mysql://{{ .Values.datasource.host }}:{{ .Values.datasource.port }}/{{ .Values.datasource.dbname }}
-      username: {{ .Values.datasource.username | b64enc }}
-      password: {{ .Values.datasource.password | b64enc }}
+      username: {{ .Values.datasource.username }}
+      password: {{ .Values.datasource.password }}
       maxactive: 100
       maxidle: 10
       minidle: 0

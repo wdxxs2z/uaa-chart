@@ -74,7 +74,7 @@ if [ "$UAA_SSL" = "true" ]; then
     echo "[uaa-pre-start] Generate self pem"
     /usr/local/uaa/bin/generate_crt
     echo "[uaa-pre-start] Installing Server SSL certificate"
-    /usr/local/uaa/bin/install_uaa_crt /usr/local/uaa/config/uaa.pem
+    /usr/local/uaa/bin/install_uaa_crt uaa.pem
     echo "[uaa-pre-start] Installed Server SSL certificate"
 fi
 

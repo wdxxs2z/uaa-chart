@@ -11,8 +11,8 @@ imageTag: "5.7.14"
 
 ## Create a database user
 ##
-# mysqlUser:
-# mysqlPassword:
+mysqlUser: admin
+mysqlPassword: changeme
 
 ## Allow unauthenticated access, uncomment to enable
 ##
@@ -20,7 +20,7 @@ imageTag: "5.7.14"
 
 ## Create a database
 ##
-# mysqlDatabase:
+mysqlDatabase: uaa
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
