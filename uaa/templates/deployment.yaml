@@ -14,6 +14,13 @@ spec:
       labels:
         app: {{ template "uaa.fullname" . }}
     spec:
+      initContainers:
+      - name: {{ template "uaa.fullname" . }}-init
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: ['/usr/local/uaa/bin/pre-start.sh']
+        volumeMounts:
+        - name: cache-keystore
+          mountPath: /usr/local/uaa/cert-cache
       containers:
       - name: {{ template "uaa.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -48,6 +55,8 @@ spec:
           name: uaa-tomcat
         - mountPath: /usr/local/uaa/config/ca
           name: uaa-ca
+        - name: cache-keystore
+          mountPath: /usr/local/uaa/cert-cache
       volumes:
       - name: uaa-custom
         configMap:
@@ -58,3 +67,5 @@ spec:
       - name: uaa-ca
         configMap:
           name: {{ template "uaa.fullname" . }}-ca
+      - name: cache-keystore
+        emptyDir: {}
