@@ -6,53 +6,76 @@ data:
   server.xml: |-
     <?xml version='1.0' encoding='utf-8'?>
     <Server port="-1">
-    <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
-    <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
-    <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
-    <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
-    <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
-    <Service name="Catalina">
-      <Connector class="org.apache.coyote.http11.Http11NioProtocol"
-                 protocol="HTTP/1.1"
-                 connectionTimeout="20000"
-                 port="8080"
-                 bindOnInit="false"
-      />
-      <Connector class="org.apache.coyote.http11.Http11NioProtocol" protocol="HTTP/1.1" connectionTimeout="20000"
-                 scheme="https"
-                 port="8443"
-                 SSLEnabled="true"
-                 sslEnabledProtocols="TLSv1.2"
-                 ciphers="TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
-                 secure="true"
-                 clientAuth="false"
-                 sslProtocol="TLS"
-                 keystoreFile="/usr/local/uaa/config/uaa_keystore.p12"
-                 keystoreType="PKCS12"
-                 keyAlias="uaa_ssl_cert"
-                 keystorePass="k0*l*s3cur1tyr0ck$"
-                 bindOnInit="false"
-      />
-      <Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
-                 connectionTimeout="20000"
-                 port="8989"
-                 address="127.0.0.1"
-                 bindOnInit="true"/>
-      <Engine name="Catalina" defaultHost="localhost">
-        <Host name="localhost"
-              appBase="webapps"
-              unpackWARs="true"
-              autoDeploy="false"
-              failCtxIfServletStartFails="true">
-          <Valve className="org.apache.catalina.valves.RemoteIpValve"
-                 remoteIpHeader="x-forwarded-for"
-                 protocolHeader="x-forwarded-proto"
-                 internalProxies="10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}"
-          />
-          <Valve className="org.apache.catalina.valves.AccessLogValve" directory="/var/log/uaa"
-                 prefix="localhost_access" suffix=".log" rotatable="false" pattern="%h %l %u %t &quot;%r&quot; %s %b"/>
+      <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
+      <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+      <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+      <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+      <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
 
-        </Host>
-      </Engine>
-    </Service>
+        <Service name="Catalina">
+          <Connector class="org.apache.coyote.http11.Http11NioProtocol"
+                     protocol="HTTP/1.1"
+                     connectionTimeout="20000"
+                     port="8080"
+                     bindOnInit="false"
+          />
+          <Connector class="org.apache.coyote.http11.Http11NioProtocol" protocol="HTTP/1.1" connectionTimeout="20000"
+                     scheme="https"
+                     port="8443"
+                     SSLEnabled="true"
+                     sslEnabledProtocols="TLSv1.2"
+                     ciphers="TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+                     secure="true"
+                     clientAuth="false"
+                     sslProtocol="TLS"
+                     keystoreFile="/usr/local/uaa/config/uaa_keystore.p12"
+                     keystoreType="PKCS12"
+                     keyAlias="uaa_ssl_cert"
+                     keystorePass="k0*l*s3cur1tyr0ck$"
+                     bindOnInit="false"
+          />
+          <Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
+                     connectionTimeout="20000"
+                     port="8989"
+                     address="127.0.0.1"
+                     bindOnInit="true"/>
+
+          <Engine name="Catalina" defaultHost="localhost">
+            <Host name="localhost"
+                  appBase="webapps"
+                  unpackWARs="true"
+                  autoDeploy="false"
+                  failCtxIfServletStartFails="true">
+                  <Valve className="org.apache.catalina.valves.RemoteIpValve"
+                         remoteIpHeader="x-forwarded-for"
+                         protocolHeader="x-forwarded-proto"
+                         internalProxies="10\.10\.130\.58|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}" />
+                  <Valve className="org.apache.catalina.valves.AccessLogValve" directory="/var/vcap/sys/log/uaa"
+                         prefix="localhost_access" suffix=".log" rotatable="false" pattern="%h %l %u %t &quot;%r&quot; %s %b"/>
+            </Host>
+          </Engine>
+        </Service>
     </Server>
+  context.xml: |-
+    <?xml version='1.0' encoding='utf-8'?>
+    <!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    -->
+    <!-- The contents of this file will be loaded for each web application -->
+    <Context useRelativeRedirects="false">
+        <WatchedResource>WEB-INF/web.xml</WatchedResource>
+        <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+    </Context>

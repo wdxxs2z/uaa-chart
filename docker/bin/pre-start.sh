@@ -47,8 +47,10 @@ function process_certs {
 }
 
 function setup_directories {
+    echo "Copy directories files..."
     mkdir -p /var/log/uaa
-    cp -a /usr/local/uaa/config/tomcat/* /usr/local/tomcat/conf/
+    cp /usr/local/uaa/config/tomcat/server.xml /usr/local/tomcat/conf
+    cp /usr/local/uaa/config/tomcat/context.xml /usr/local/tomcat/conf
     rm -rf $KEY_STORE_FILE
 }
 
