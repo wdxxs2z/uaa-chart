@@ -18,6 +18,9 @@ spec:
       - name: {{ template "uaa.fullname" . }}-init
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         command: ['/usr/local/uaa/bin/pre-start.sh']
+        env:
+        - name: KUBERNETES_ENV
+          value: "true"
         volumeMounts:
         - name: cache-keystore
           mountPath: /usr/local/uaa/cert-cache
