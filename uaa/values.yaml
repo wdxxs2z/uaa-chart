@@ -102,7 +102,7 @@ uaa:
       3A39PXH/TGXlURXfOn3S5LZhBelVcTmHjoJCbjwfAhcvGARtJvuwLgQg3r1Pq2nP
       0ElPKb8S9yavYYtadGRCJEam9ou0A+FJsVRAQbgCv9Wt+lunlsfU+A==
       -----END RSA PRIVATE KEY-----
-    saml:
+    tls:
       cert: | 
         -----BEGIN CERTIFICATE-----
         MIIDkzCCAnugAwIBAgIUOi7wJ3rt8PUVUNTJ9iGN1ykN14owDQYJKoZIhvcNAQEL
