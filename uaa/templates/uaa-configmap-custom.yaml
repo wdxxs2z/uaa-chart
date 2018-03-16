@@ -101,7 +101,7 @@ data:
         kubernetes:
           access-token-validity: 14400
           authorities: uaa.none
-          authorized-grant-types: password,refresh_token,authorization_code,client_credentials
+          authorized-grant-types: password,refresh_token,client_credentials
           id: kubernetes
           override: true
           refresh-token-validity: 1209600
