@@ -228,10 +228,8 @@ data:
         activeKeyId: key1
         keys:
           key1:
-            certificate:
-{{ toYaml .Values.uaa.ssl.saml.cert | indent 12 }}
-            key:
-{{ toYaml .Values.uaa.ssl.saml.key | indent 12 }}
+            certificate: {{ toYaml .Values.uaa.ssl.saml.cert | indent 12 }}
+            key: {{ toYaml .Values.uaa.ssl.saml.key | indent 12 }}
             passphrase: ''
         signMetaData: true
         signRequest: true

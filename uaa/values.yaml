@@ -103,7 +103,7 @@ uaa:
       0ElPKb8S9yavYYtadGRCJEam9ou0A+FJsVRAQbgCv9Wt+lunlsfU+A==
       -----END RSA PRIVATE KEY-----
     saml:
-      cert: |
+      cert: | 
         -----BEGIN CERTIFICATE-----
         MIIDkzCCAnugAwIBAgIUOi7wJ3rt8PUVUNTJ9iGN1ykN14owDQYJKoZIhvcNAQEL
         BQAwFTETMBEGA1UEAxMKa3ViZXJuZXRlczAeFw0xODAzMTQxNDQ0MDBaFw0xOTAz
