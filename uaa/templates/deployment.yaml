@@ -17,6 +17,7 @@ spec:
       initContainers:
       - name: {{ template "uaa.fullname" . }}-init
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ['/usr/local/uaa/bin/pre-start.sh']
         env:
         - name: KUBERNETES_ENV
