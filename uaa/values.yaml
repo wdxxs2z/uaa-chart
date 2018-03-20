@@ -27,15 +27,17 @@ datasource:
 
 ingress:
   annotations:
-    kubernetes.io/ingress.class: nginx
+    #kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
-  enabled: true
+  enabled: false
   tls:
     - secretName: uaa-tls-secret
       hosts:
       - uaa.k8s.io
       - login.k8s.io
-  url: uaa.k8s.io
+  hosts: 
+    - uaa.k8s.io
+    - login.k8s.io
 
 httpPort: 8080
 httpsPort: 8443
@@ -48,7 +50,17 @@ clients:
     secret: changeme
   admin:
     secret: changeme
-
+  self:
+    app:
+      id: app
+      override: true
+      secret: app-secret
+      authorized-grant-types: authorization_code,client_credentials,refresh_token
+      authorities: test_resource.test_action
+      scope: test_resource.test_action,test_resource.other_action
+      redirect-uri: https://login.k8s.io
+      app-launch-url: http://aap.ko.io
+      show-on-homepage: true
 scim:
   admin:
     password: adminpassword

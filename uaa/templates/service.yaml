@@ -10,13 +10,11 @@ metadata:
 spec:
   type: {{ .Values.serviceType }}
   ports:
-    - port: {{ .Values.httpPort | int }}
-      targetPort: http
-      protocol: TCP
+    - port: {{ .Values.httpPort }}
+      targetPort: {{ .Values.httpPort }}
       name: http
-    - port: {{ .Values.httpsPort | int }}
-      targetPort: https
-      protocol: TCP
+    - port: {{ .Values.httpsPort }}
+      targetPort: {{ .Values.httpsPort }}
       name: https
   selector:
     app: {{ template "name" . }}

@@ -1,4 +1,6 @@
 {{- if .Values.ingress.enabled }}
+{{- $serviceName := include "uaa.fullname" . -}}
+{{- $servicePort := .Values.httpPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -9,28 +11,17 @@ metadata:
   name: {{ template "uaa.fullname" . }}
   labels:
     app: {{ template "uaa.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
 spec:
   rules:
-  - host: {{ .Values.ingress.url | quote }}
-    {{- if (not (empty .Values.ingress.tls)) }}
-    https:
-      paths:
-      - path: /
-        backend:
-          serviceName: {{ template "uaa.fullname" . }}
-          servicePort: {{ .Values.httpsPort }}
-    {{- else }}
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: {{ template "uaa.fullname" . }}
-          servicePort: {{ .Values.httpPort }}
-    {{- end }}
-
+    {{- range $host := .Values.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: http
+    {{- end -}}
 {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}

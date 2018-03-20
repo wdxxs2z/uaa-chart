@@ -120,6 +120,7 @@ data:
           authorities: openid,clients.read,clients.write,clients.secret,uaa.admin,scim.read,scim.write,password.write
           id: admin
           secret: {{ .Values.clients.admin.secret | b64enc }}
+{{ toYaml .Values.clients.self | indent 8 }}
       user:
         authorities:
         - openid

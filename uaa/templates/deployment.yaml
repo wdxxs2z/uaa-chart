@@ -12,7 +12,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "uaa.fullname" . }}
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
     spec:
       initContainers:
       - name: {{ template "uaa.fullname" . }}-init
