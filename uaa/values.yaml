@@ -25,13 +25,44 @@ datasource:
   username: admin
   password: changeme
 
+spring_profiles: mysql#,ldap
+
+ldap:
+  ldapdebug: Ldap configured through UAA
+  profile:
+    file: ldap/ldap-search-and-bind.xml
+  ssl:
+    skipverification: false
+    tls: none
+  base:
+    url: ldap://your.ldap.domain:389
+    mailAttributeName: mail
+    mailSubstitute: ''
+    mailSubstituteOverridesLdap: false
+    referral: follow
+    userDn: your_username
+    password: your_password
+    searchBase: dc=example,dc=com
+    searchFilter: cn={0}
+  addShadowUserOnLogin: true
+  emailDomain: []
+  storeCustomAttributes: true
+  groups:
+    file: ldap/ldap-groups-null.xml
+    searchBase: ''
+    groupRoleAttribute: spring.security.ldap.dn
+    groupSearchFilter: member={0}
+    searchSubtree: 'true'
+    maxSearchDepth: '1'
+
 ingress:
   annotations:
     #kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/secure-backends: "true"
   enabled: false
   tls:
-    - secretName: uaa-tls-secret
+    - secretName: uaa-auth-secret
       hosts:
       - uaa.k8s.io
       - login.k8s.io

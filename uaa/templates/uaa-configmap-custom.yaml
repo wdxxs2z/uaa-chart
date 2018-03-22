@@ -9,7 +9,11 @@ data:
     disableInternalUserManagement: false
     issuer:
       uri: https://uaa.{{ .Values.externalUrl }}
+{{- if .Values.ldap }}
+    spring_profiles: mysql,ldap
+{{- else }}
     spring_profiles: mysql
+{{- end }}
     database:
       url: jdbc:mysql://{{ .Values.datasource.host }}:{{ .Values.datasource.port }}/{{ .Values.datasource.dbname }}
       username: {{ .Values.datasource.username }}
@@ -253,3 +257,7 @@ data:
       from_address:
       auth: false
       starttls: false
+{{- if .Values.ldap }}
+    ldap:
+{{ toYaml .Values.ldap | indent 6 }}
+{{- end }}
