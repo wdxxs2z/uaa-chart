@@ -1,6 +1,6 @@
 FROM tomcat:8.0-jre8-alpine
 
-ENV UAA_VERSION 4.10.0
+ENV UAA_VERSION 4.11.0
 
 RUN apk update && \
   apk add --no-cache openssl && \
