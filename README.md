@@ -1,10 +1,16 @@
 # UAA docker & chart repo
 
+UAA can support openid protocol,so we can use it in k8s with oidc.
+
 ## Mysql chart install
 
 ```
 helm install -n database --namespace auth-system mysql
 ```
+
+## Ingress install
+
+The default domain is "\*.k8s.io", and the cert must be modify.
 
 ## UAA chart install
 

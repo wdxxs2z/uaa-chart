@@ -59,12 +59,9 @@ ingress:
   annotations:
     kubernetes.io/tls-acme: "true"
     ingress.kubernetes.io/secure-backends: "true"
-  enabled: false
+  enabled: true
   tls:
     - secretName: uaa-auth-secret
-      hosts:
-      - uaa.k8s.io
-      - login.k8s.io
   hosts: 
     - uaa.k8s.io
     - login.k8s.io
