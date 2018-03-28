@@ -45,3 +45,92 @@ helm install -n auth --namespace auth-system uaa
 | `uaa.ssl.cakey`|The CA key content|xxxxxx|
 | `uaa.ssl.tls.cert`|The uaa.k8s.io or login.k8s.io cert|xxxxxx|
 | `uaa.ssl.tls.key`|The client key content|xxxxxx|
+
+## Get the id_token
+
+Notice that: always we can get access and refresh token,not inclue id_token, so first step is: get the correct id_token.Please notice the **response_type=id_token+token**
+
+```
+curl -k 'https://uaa.k8s.io/oauth/token' -i -X POST \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -u 'kubernetes:{k8s_client_secret}' \
+  -d 'username=admin' \
+  -d 'password={admin_password}' \
+  -d 'grant_type=password' \
+  -d 'token_format=opaque' \ # if you want get all token fomart, remove the line.
+  -d 'response_type=id_token+token'
+```
+
+## Config the kubeconfig
+
+```
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /etc/kubernetes/pki/ca.crt
+    server: https://192.168.213.131:6443
+  name: admin
+- cluster:
+    certificate-authority-data: xxxxx
+    server: https://192.168.213.131:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: admin
+    user: admin
+  name: admin
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: admin
+kind: Config
+preferences: {}
+users:
+- name: admin
+  user:
+    as-user-extra: {}
+    auth-provider:
+      config:
+        client-id: kubernetes
+        client-secret: Y2hhbmdlbWU=
+        idp-certificate-authority: /etc/kubernetes/pki/ca.crt
+        idp-issuer-url: https://uaa.k8s.io/oauth/token
+        id-token: xxxxx 
+        refresh-token: xxxxxx
+      name: oidc
+```
+
+## Access the admin-cluster role to admin
+
+Use the kubeadm defalut operator
+
+```
+kubectl create -f user_role_bind
+```
+
+## Test the result
+
+```
+k8s@192:~$ kubectl -n kube-system get pod
+NAME                                      READY     STATUS    RESTARTS   AGE
+etcd-192.168.213.131                      1/1       Running   19         19d
+heapster-5c448886d-hcllj                  1/1       Running   11         13d
+kube-apiserver-192.168.213.131            1/1       Running   0          29m
+kube-controller-manager-192.168.213.131   1/1       Running   20         19d
+kube-dns-6f4fd4bdf-k8z82                  3/3       Running   54         19d
+kube-flannel-ds-2jv72                     1/1       Running   20         19d
+kube-flannel-ds-swrmd                     1/1       Running   21         19d
+kube-flannel-ds-x6g7c                     1/1       Running   21         19d
+kube-proxy-cmsfl                          1/1       Running   17         19d
+kube-proxy-nn4sd                          1/1       Running   17         19d
+kube-proxy-wfwgz                          1/1       Running   18         19d
+kube-scheduler-192.168.213.131            1/1       Running   20         19d
+kubernetes-dashboard-f596b976d-9mbv7      1/1       Running   16         19d
+monitoring-grafana-65757b9656-9mh94       1/1       Running   11         13d
+monitoring-influxdb-66946c9f58-42lhz      1/1       Running   11         13d
+tiller-deploy-5b48764ff7-48vt5            1/1       Running   11         13d
+traefik-ingress-controller-65pff          1/1       Running   0          5h
+traefik-ingress-controller-f655k          1/1       Running   0          5h
+```

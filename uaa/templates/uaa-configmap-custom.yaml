@@ -194,6 +194,8 @@ data:
     assetBaseUrl: "/resources/oss"
     uaa:
       url: https://uaa.{{ .Values.externalUrl }}
+      id_token:
+        disable: false
       limitedFunctionality:
         enabled: false
         whitelist:
