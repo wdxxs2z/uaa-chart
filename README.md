@@ -66,14 +66,15 @@ EOL
 tls:
   cert: |
     xxxxxxxx
+  key: |
+    xxxxxxxx
 ```
-**Ingress**</br>
-tls.key:
+**Treafik ingress core secret:**</br>
 ```
+tls.key: xxxxxxx
 cat ingress-key.pem | base64 -w0
-```
-tls.crt:
-```
+
+tls.crt: xxxxxxx
 cat ingress-crt.pem | base64 -w0
 ```
 
