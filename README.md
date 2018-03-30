@@ -66,9 +66,8 @@ curl -k 'https://uaa.k8s.io/oauth/token' -i -X POST \
 
 The uaa does not support refresh toke with id_token, and even if the response_type=id_token is configured.kubectl does not have the response_type parameter when requesting refresh_token, so I have a patch.
 
-```
 https://github.com/cloudfoundry/uaa/blob/4.11.0/server/src/main/java/org/cloudfoundry/identity/uaa/oauth/UaaTokenServices.java#L311
-
+```
 //response_type
 String response_type = request.getRequestParameters().get("response_type");
 Set<String> responseType = new HashSet<>();
@@ -77,6 +76,30 @@ if (response_type != null) {
 }else if (response_type == null && client.getScope().contains("openid")) {
     responseType.add("id_token");
 }
+
+CompositeAccessToken accessToken =
+            createAccessToken(
+                accessTokenId,
+                user.getId(),
+                user,
+                (claims.get(AUTH_TIME) != null) ? new Date(((Long) claims.get(AUTH_TIME)) * 1000l) : null,
+                null,
+                requestedScopes,
+                clientId,
+                audience /*request.createOAuth2Request(client).getResourceIds()*/,
+                grantType,
+                refreshTokenValue,
+                nonce,
+                additionalAuthorizationInfo,
+                additionalRootClaims,
+                responseType, # this is response type set.
+                revocableHashSignature,
+                false,
+                null,  //TODO populate response types
+                null,
+                revocable,
+                null,
+                null);
 ```
 
 ## Config the kubeconfig
