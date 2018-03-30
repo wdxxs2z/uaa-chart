@@ -8,7 +8,7 @@ UAA can support openid protocol,so we can use it in k8s with oidc.
 helm install -n database --namespace auth-system mysql
 ```
 
-## Ingress install
+## Ingress core tls generate
 
 The default domain is "\*.k8s.io", and the cert must be modify.
 
@@ -35,7 +35,7 @@ EOL
     openssl x509 -req -in ingress.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out ingress.crt -days 3650 -extensions v3_req -extfile openssl.cnf
 ```
 
-## UAA saml tls config
+## UAA and saml tls generate
 ```
 cat >openssl.cnf <<EOL
 [req]
@@ -69,7 +69,7 @@ tls:
   key: |
     xxxxxxxx
 ```
-**Treafik ingress core secret:**</br>
+**Treafik ingress core secret: in ingress director.**</br>
 ```
 tls.key: xxxxxxx
 cat ingress-key.pem | base64 -w0
