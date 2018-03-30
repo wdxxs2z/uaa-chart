@@ -42,6 +42,10 @@ spec:
           containerPort: 8080
         - name: https
           containerPort: 8443
+{{- if .Values.remoteDebug.enabled }}
+        - name: dubug
+          containerPort: {{ .Values.remoteDebug.port }}
+{{- end }}
         env:
         - name: KUBERNETES_ENV
           value: "true"

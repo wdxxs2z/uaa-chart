@@ -16,6 +16,11 @@ spec:
     - port: {{ .Values.httpsPort }}
       targetPort: {{ .Values.httpsPort }}
       name: https
+{{- if .Values.remoteDebug.enabled }}
+    - port: {{ .Values.remoteDebug.port }}
+      targetPort: {{ .Values.remoteDebug.port }}
+      name: debug
+{{- end }}
   selector:
     app: {{ template "name" . }}
     release: {{ .Release.Name }}

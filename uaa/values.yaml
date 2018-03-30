@@ -1,6 +1,6 @@
 image:
   repository: wdxxsez/uaa-chart 
-  tag: "4.11.0"
+  tag: "4.11.0-patch"
   pullPolicy: Always
 
 replicaCount: 1
@@ -15,8 +15,14 @@ resources:
 
 externalUrl: k8s.io
 
+remoteDebug: 
+  enabled: false
+  port: 8000
+
 tomcat:
   catalinaOpts: "-Xmx768m -XX:MaxPermSize=256m"
+  # if remoteDebug enabled,please use it.
+  # catalinaOpts: "-Xmx768m -XX:MaxPermSize=256m -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
 
 datasource:
   host: database-mysql

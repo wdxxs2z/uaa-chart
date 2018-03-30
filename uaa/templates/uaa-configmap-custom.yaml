@@ -117,7 +117,7 @@ data:
           autoapprove: true
           id: login
           override: true
-          scope: openid,oauth.approvals
+          scope: oauth.approvals
           secret: {{ .Values.clients.login.secret | b64enc }}
         admin:
           authorized-grant-types: client_credentials
