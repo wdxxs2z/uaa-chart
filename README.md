@@ -12,6 +12,70 @@ helm install -n database --namespace auth-system mysql
 
 The default domain is "\*.k8s.io", and the cert must be modify.
 
+```
+cat >openssl.cnf <<EOL
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = *.k8s.io
+DNS.2 = localhost
+EOL
+
+    echo "Generating ingress key ..."
+    openssl genrsa -out ingress.key 2048
+    echo "Generating ingress csr ..."
+    openssl req -new -key ingress.key -out ingress.csr -subj "/CN=*.k8s.io" -config openssl.cnf
+    echo "Generating ingress crt ..."
+    openssl x509 -req -in ingress.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out ingress.crt -days 3650 -extensions v3_req -extfile openssl.cnf
+```
+
+## UAA saml tls config
+```
+cat >openssl.cnf <<EOL
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = uaa.k8s.io
+DNS.2 = login.k8s.io
+EOL
+
+    echo "Generating uaa tls key ..."
+    openssl genrsa -out tls.key 2048
+    echo "Generating uaa tls csr ..."
+    openssl req -new -key ingress.key -out tls.csr -subj "/CN=uaa.k8s.io,login.k8s.io" -config openssl.cnf
+    echo "Generating uaa tls crt ..."
+    openssl x509 -req -in tls.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out tls.crt -days 3650 -extensions v3_req -extfile openssl.cnf
+```
+
+## Config your ingress and uaa values.
+
+**Values:**
+tls:
+  cert: |
+    xxxxxxxx
+
+**Ingress**
+tls.key:
+```
+cat ingress-key.pem | base64 -w0
+```
+tls.crt:
+```
+cat ingress-crt.pem | base64 -w0
+```
+
 ## UAA chart install
 
 ```
