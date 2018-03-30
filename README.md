@@ -62,11 +62,12 @@ EOL
 ## Config your ingress and uaa values.
 
 **Values:**
+```
 tls:
   cert: |
     xxxxxxxx
-
-**Ingress**
+```
+**Ingress**</br>
 tls.key:
 ```
 cat ingress-key.pem | base64 -w0
