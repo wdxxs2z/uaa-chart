@@ -84,15 +84,16 @@ clients:
   admin:
     secret: changeme
   self:
-    app:
-      id: app
+    kubernetes-dashboard:
+      id: kubernetes-dashboard
       override: true
-      secret: app-secret
-      authorized-grant-types: authorization_code,client_credentials,refresh_token
-      authorities: test_resource.test_action
-      scope: test_resource.test_action,test_resource.other_action
-      redirect-uri: https://login.k8s.io
-      app-launch-url: http://aap.ko.io
+      secret: kubernetes-password
+      authorized-grant-types: authorization_code,client_credentials,refresh_token,password
+      authorities: uaa.resource
+      refresh-token-validity: 1209600
+      access-token-validity: 14400
+      scope: openid,email,profile,password.write,scim.read,scim.write,uaa.user
+      redirect-uri: https://kubernetes-dashboard.k8s.io
       show-on-homepage: true
 scim:
   admin:

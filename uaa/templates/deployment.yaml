@@ -56,7 +56,7 @@ spec:
         - name: CATALINA_OPTS
           value: "{{ .Values.tomcat.catalinaOpts }}"
         - name: SERVICE_NAME
-          value: '{{ template "uaa.fullname" . }}'
+          value: '{{ template "uaa.fullname" . }}.{{ .Release.Namespace }}'
         volumeMounts:
         - mountPath: /usr/local/uaa/config
           name: uaa-custom
