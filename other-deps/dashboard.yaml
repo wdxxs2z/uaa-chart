@@ -11,19 +11,20 @@ spec:
         app: kubernetes-dashboard-proxy
     spec:
       containers:
-      - image: quay.io/gambol99/keycloak-proxy:v2.1.1
+      - image: wdxxsez/keycloak-proxy:v2.1.1-patch
         name: kubernetes-dashboard-proxy
         args:
           - --listen=0.0.0.0:3000
           - --discovery-url=https://uaa.k8s.io/oauth/token
           - --client-id=kubernetes
-          - --client-secret=Y2hhbmdlbWU=
+          - --client-secret=kubernetes-password
           - --redirection-url=https://kubernetes-dashboard.k8s.io
           - --enable-refresh-tokens=true
           - --encryption-key=MsVRjD36bfAxfBvHUKUjXOTPXaItDThn    # 32 bytes string
           - --upstream-url=https://kubernetes-dashboard.kube-system.svc.cluster.local
           - --resources=uri=/*
           - --skip-openid-provider-tls-verify
+          - --cookie-domain=kubernetes-dashboard.k8s.io
         ports:
         - containerPort: 3000
         livenessProbe:
@@ -58,6 +59,9 @@ kind: Ingress
 metadata:
   name: kubernetes-dashboard-proxy
   namespace: kube-system
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/secure-backends: "true"
 spec:
   rules:
   - host: kubernetes-dashboard.k8s.io
@@ -67,3 +71,5 @@ spec:
         backend:
           serviceName: kubernetes-dashboard-proxy
           servicePort: 3000
+  tls:
+  - secretName: dash-proxy-secret

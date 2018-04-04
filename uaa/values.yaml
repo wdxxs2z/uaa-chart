@@ -84,15 +84,15 @@ clients:
   admin:
     secret: changeme
   self:
-    kubernetes-dashboard:
-      id: kubernetes-dashboard
-      override: true
-      secret: kubernetes-password
-      authorized-grant-types: authorization_code,client_credentials,refresh_token,password
-      authorities: uaa.resource
-      refresh-token-validity: 1209600
+    kubernetes:
       access-token-validity: 14400
-      scope: openid,email,profile,password.write,scim.read,scim.write,uaa.user
+      authorities: uaa.resource
+      authorized-grant-types: password,refresh_token,client_credentials,authorization_code
+      id: kubernetes
+      override: true
+      refresh-token-validity: 1209600
+      scope: openid,password.write,scim.read,scim.write,uaa.user,email,profile
+      secret: k8s-changeme
       redirect-uri: https://kubernetes-dashboard.k8s.io
       show-on-homepage: true
 scim:

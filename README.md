@@ -240,3 +240,83 @@ tiller-deploy-5b48764ff7-48vt5            1/1       Running   11         13d
 traefik-ingress-controller-65pff          1/1       Running   0          5h
 traefik-ingress-controller-f655k          1/1       Running   0          5h
 ```
+
+### keycloak-proxy to dashboard
+
+1. If you want login dashboard with uaa,you should deploy the keycloak-proxy,but the keycloak-proxy has some problem: uaa has muti or array aud claim -> [clientid,...],the keycloak-proxy is string,so we must skip it.
+
+```
+https://github.com/gambol99/keycloak-proxy/blob/master/user_context.go#L43
+
+audiences, found, err := claims.StringsClaim(claimAudience)
+if err != nil || !found {
+        return nil, ErrNoTokenAudience
+}
+audience := audiences[0]
+```
+2. Before,if we set --oidc-username-claim=email,email_verified claim must be in our token.but recently,email_verified claim is not required for JWT validation,if it merage to next k8s release,we can use it with uaa.Now we only use **--oidc-username-claim=user_name**
+
+```
+ - --oidc-issuer-url=https://uaa.k8s.io/oauth/token
+ - --oidc-username-claim=user_name
+ - --oidc-username-prefix=https://uaa.k8s.io/oauth/token#
+ - --oidc-client-id=kubernetes
+ - --oidc-ca-file=/etc/kubernetes/pki/ca.crt
+```
+3. UAA set,we must define a client,and the authorized-grant-types must have password,refresh_token,client_credentials,authorization_code.The redirect uri such as: https://kubernetes-dashboard.k8s.io
+
+```
+oauth:
+  clients:
+    kubernetes:
+      access-token-validity: 14400
+      authorities: uaa.resource
+      authorized-grant-types: password,refresh_token,client_credentials,authorization_code
+      id: kubernetes
+      override: true
+      refresh-token-validity: 1209600
+      scope: openid,password.write,scim.read,scim.write,uaa.user,email,profile
+      redirect-uri: https://kubernetes-dashboard.k8s.io
+      secret: k8s-changeme
+```
+4. Config the keycloak-proxy
+
+```
+args:
+  - --listen=0.0.0.0:3000
+  - --discovery-url=https://uaa.k8s.io/oauth/token
+  - --client-id=kubernetes
+  - --client-secret=k8s-changeme
+  - --redirection-url=https://kubernetes-dashboard.k8s.io
+  - --enable-refresh-tokens=true
+  - --encryption-key=MsVRjD36bfAxfBvHUKUjXOTPXaItDThn
+  - --upstream-url=https://kubernetes-dashboard.kube-system.svc.cluster.local
+  - --resources=uri=/*
+  - --skip-openid-provider-tls-verify
+  - --cookie-domain=kubernetes-dashboard.k8s.io
+```
+5. Create a test user with uaac
+
+```
+uaac token client get admin -s Y2hhbmdlbWU=
+
+uaac user add tony@k8s.io --emails tony@k8s.io
+```
+6. Bind a user with role
+
+```
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cluster-init-jojo
+subjects:
+- kind: User
+  name: https://uaa.k8s.io/oauth/token#tony@k8s.io
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+```
+7 Login with uaa and verify the header token,you can view the kc-access in your cookie.
