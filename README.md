@@ -254,7 +254,7 @@ if err != nil || !found {
 }
 audience := audiences[0]
 ```
-2. Before,if we set --oidc-username-claim=email,email_verified claim must be in our token.but recently,email_verified claim is not required for JWT validation,if it merage to next k8s release,we can use it with uaa.Now we only use **--oidc-username-claim=user_name**
+2. Before,if we set --oidc-username-claim=email,email_verified claim must be in our token.but recently,email_verified claim is not required for JWT validation(https://github.com/kubernetes/kubernetes/pull/61508),if it merage to next k8s release,we can use it with uaa.Now we only use **--oidc-username-claim=user_name**
 
 ```
  - --oidc-issuer-url=https://uaa.k8s.io/oauth/token
@@ -309,7 +309,7 @@ uaac user add tony@k8s.io --emails tony@k8s.io
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: cluster-init-jojo
+  name: cluster-init-tony
 subjects:
 - kind: User
   name: https://uaa.k8s.io/oauth/token#tony@k8s.io
