@@ -2,91 +2,9 @@
 
 UAA can support openid protocol,so we can use it in k8s with oidc.
 
-* [1.Config mysql and install mysql](#Mysql chart install)
+## Configure the uaa and kubernetes
 
-## Mysql chart install
-
-```
-helm install -n database --namespace auth-system mysql
-```
-
-## Ingress core tls generate
-
-The default domain is "\*.k8s.io", and the cert must be modify.
-
-```
-cat >openssl.cnf <<EOL
-[req]
-req_extensions = v3_req
-distinguished_name = req_distinguished_name
-[req_distinguished_name]
-[ v3_req ]
-basicConstraints = CA:FALSE
-keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-subjectAltName = @alt_names
-[alt_names]
-DNS.1 = *.k8s.io
-DNS.2 = localhost
-EOL
-
-    echo "Generating ingress key ..."
-    openssl genrsa -out ingress.key 2048
-    echo "Generating ingress csr ..."
-    openssl req -new -key ingress.key -out ingress.csr -subj "/CN=*.k8s.io" -config openssl.cnf
-    echo "Generating ingress crt ..."
-    openssl x509 -req -in ingress.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out ingress.crt -days 3650 -extensions v3_req -extfile openssl.cnf
-```
-
-## UAA and saml tls generate
-```
-cat >openssl.cnf <<EOL
-[req]
-req_extensions = v3_req
-distinguished_name = req_distinguished_name
-[req_distinguished_name]
-[ v3_req ]
-basicConstraints = CA:FALSE
-keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-subjectAltName = @alt_names
-[alt_names]
-DNS.1 = uaa.k8s.io
-DNS.2 = login.k8s.io
-EOL
-
-    echo "Generating uaa tls key ..."
-    openssl genrsa -out tls.key 2048
-    echo "Generating uaa tls csr ..."
-    openssl req -new -key ingress.key -out tls.csr -subj "/CN=uaa.k8s.io,login.k8s.io" -config openssl.cnf
-    echo "Generating uaa tls crt ..."
-    openssl x509 -req -in tls.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out tls.crt -days 3650 -extensions v3_req -extfile openssl.cnf
-```
-
-## Config your ingress and uaa values.
-
-**Values:**
-```
-tls:
-  cert: |
-    xxxxxxxx
-  key: |
-    xxxxxxxx
-```
-**Treafik ingress core secret: in ingress director.**</br>
-```
-tls.key: xxxxxxx
-cat ingress-key.pem | base64 -w0
-
-tls.crt: xxxxxxx
-cat ingress-crt.pem | base64 -w0
-```
-
-## UAA chart install
-
-```
-helm install -n auth --namespace auth-system uaa
-```
-
-## Configuration
+### Core Configuration
 
 | Parameter               | Description                            | Default                   |
 | ----------------------- | -------------------------------------- | ------------------------- |
@@ -114,7 +32,89 @@ helm install -n auth --namespace auth-system uaa
 | `uaa.ssl.tls.cert`|The uaa.k8s.io or login.k8s.io cert|xxxxxx|
 | `uaa.ssl.tls.key`|The client key content|xxxxxx|
 
-## Get the id_token
+### 1. Prepare our database, provide mysql chart install
+
+```
+helm install -n database --namespace auth-system mysql
+```
+
+### 2. Generate the ingress gloable domain tls
+
+The default domain is "\*.k8s.io", and the cert must be modify.
+
+```
+cat >openssl.cnf <<EOL
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = *.k8s.io
+DNS.2 = localhost
+EOL
+
+    echo "Generating ingress key ..."
+    openssl genrsa -out ingress.key 2048
+    echo "Generating ingress csr ..."
+    openssl req -new -key ingress.key -out ingress.csr -subj "/CN=*.k8s.io" -config openssl.cnf
+    echo "Generating ingress crt ..."
+    openssl x509 -req -in ingress.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out ingress.crt -days 3650 -extensions v3_req -extfile openssl.cnf
+```
+
+### 3. Generate the uaa and saml sub domain ingress secret tls
+```
+cat >openssl.cnf <<EOL
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = uaa.k8s.io
+DNS.2 = login.k8s.io
+EOL
+
+    echo "Generating uaa tls key ..."
+    openssl genrsa -out tls.key 2048
+    echo "Generating uaa tls csr ..."
+    openssl req -new -key ingress.key -out tls.csr -subj "/CN=uaa.k8s.io,login.k8s.io" -config openssl.cnf
+    echo "Generating uaa tls crt ..."
+    openssl x509 -req -in tls.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out tls.crt -days 3650 -extensions v3_req -extfile openssl.cnf
+```
+
+### 4. Input your ingress and uaa tls values.
+
+**Values:**
+```
+tls:
+  cert: |
+    xxxxxxxx
+  key: |
+    xxxxxxxx
+```
+**Treafik ingress core secret: in ingress director.**</br>
+```
+tls.key: xxxxxxx
+cat ingress-key.pem | base64 -w0
+
+tls.crt: xxxxxxx
+cat ingress-crt.pem | base64 -w0
+```
+
+### 5. Install the uaa chart
+
+```
+helm install -n auth --namespace auth-system uaa
+```
+
+### 6. Get the id_token
 
 Notice that: always we can get access and refresh token,not inclue id_token, so first step is: get the correct id_token.Please notice the **response_type=id_token+token**
 
@@ -130,7 +130,7 @@ curl -k 'https://uaa.k8s.io/oauth/token' -i -X POST \
   -d 'response_type=id_token+token'
 ```
 
-## UAA refresh not contants id_token issue.
+### 7. Confirm the uaa refresh not contants id_token issue.
 
 The uaa does not support refresh toke with id_token, and even if the response_type=id_token is configured.kubectl does not have the response_type parameter when requesting refresh_token, so I have a patch.
 
@@ -170,7 +170,7 @@ CompositeAccessToken accessToken =
                 null);
 ```
 
-## Config the kubeconfig
+### 8. Config the kubeconfig
 
 ```
 apiVersion: v1
@@ -210,7 +210,7 @@ users:
       name: oidc
 ```
 
-## Access the admin-cluster role to admin
+### 9. Access the admin-cluster role to admin
 
 Use the kubeadm defalut operator
 
@@ -218,7 +218,7 @@ Use the kubeadm defalut operator
 kubectl create -f user_role_bind
 ```
 
-## Test the result
+### 10. Test the result
 
 ```
 k8s@192:~$ kubectl -n kube-system get pod
@@ -231,16 +231,6 @@ kube-dns-6f4fd4bdf-k8z82                  3/3       Running   54         19d
 kube-flannel-ds-2jv72                     1/1       Running   20         19d
 kube-flannel-ds-swrmd                     1/1       Running   21         19d
 kube-flannel-ds-x6g7c                     1/1       Running   21         19d
-kube-proxy-cmsfl                          1/1       Running   17         19d
-kube-proxy-nn4sd                          1/1       Running   17         19d
-kube-proxy-wfwgz                          1/1       Running   18         19d
-kube-scheduler-192.168.213.131            1/1       Running   20         19d
-kubernetes-dashboard-f596b976d-9mbv7      1/1       Running   16         19d
-monitoring-grafana-65757b9656-9mh94       1/1       Running   11         13d
-monitoring-influxdb-66946c9f58-42lhz      1/1       Running   11         13d
-tiller-deploy-5b48764ff7-48vt5            1/1       Running   11         13d
-traefik-ingress-controller-65pff          1/1       Running   0          5h
-traefik-ingress-controller-f655k          1/1       Running   0          5h
 ```
 
 ## keycloak-proxy to dashboard
@@ -271,7 +261,7 @@ if err != nil || !found {
 }
 audience := audiences[0]
 ```
-2. Before,if we set --oidc-username-claim=email,email_verified claim must be in our token.but recently,email_verified claim is not required for JWT validation(https://github.com/kubernetes/kubernetes/pull/61508),if it merage to next k8s release,we can use it with uaa.Now we only use **--oidc-username-claim=user_name**
+2. Before,if we set **--oidc-username-claim=email**,email_verified claim must be in our token.but recently,email_verified claim is not required for JWT validation(https://github.com/kubernetes/kubernetes/pull/61508),if it merage to next k8s release,we can use it with uaa.Now we only use **--oidc-username-claim=user_name**
 
 ```
  - --oidc-issuer-url=https://uaa.k8s.io/oauth/token
