@@ -4,6 +4,9 @@ UAA can support openid protocol,so we can use it in k8s with oidc.
 
 ## Configure the uaa and kubernetes
 
+* UAA and kubernetes oidc client mode auth
+* Proxy & UAA & kubernetes protect oidc mode auth
+
 ### Core Configuration
 
 | Parameter               | Description                            | Default                   |
