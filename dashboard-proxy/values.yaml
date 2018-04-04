@@ -1,0 +1,74 @@
+image:
+  repository: wdxxsez/keycloak-proxy
+  tag: "v2.1.1-patch"
+  pullPolicy: Always
+
+replicaCount: 1
+
+oidc:
+  url: https://uaa.k8s.io/oauth/token
+  client_id: kubernetes
+  client_secret: kubernetes-password
+  redirection_url: https://kubernetes-dashboard.k8s.io
+  upstream_url: https://kubernetes-dashboard.kube-system.svc.cluster.local
+  cookie_domain: kubernetes-dashboard.k8s.io
+
+ingress:
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/secure-backends: "true"
+  tls:
+    - secretName: keycloak-proxy-secret
+  hosts:
+    - kubernetes-dashboard.k8s.io
+  cert: |
+    -----BEGIN CERTIFICATE-----
+    MIIDljCCAn6gAwIBAgIUBeKy39oZnfqV6bFtN9ORR1L+kagwDQYJKoZIhvcNAQEL
+    BQAwFTETMBEGA1UEAxMKa3ViZXJuZXRlczAeFw0xODA0MDMwOTQ0MDBaFw0xOTA0
+    MDMwOTQ0MDBaMGsxCzAJBgNVBAYTAkNOMRAwDgYDVQQIEwdCZWlKaW5nMRAwDgYD
+    VQQHEwdCZWlKaW5nMRcwFQYDVQQKEw5zeXN0ZW06bWFzdGVyczEPMA0GA1UECxMG
+    U3lzdGVtMQ4wDAYDVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+    AQoCggEBALCnUL+OccEDeo+EjM/S988uUwgS1G7h5mCQVfsEbtxcpx2UaIrKKhis
+    2T17BPTXOGP2JSv4HZh5YDAWobINmfldzPWChfmColRQJ7SyM6l7R/jI8gFwbx3Y
+    QMScHY6MsKYwdRWx3BtFDdFXo7ujbGUox9he6ar8JrG3cDnPcYC7TMWU2FC+j38y
+    PNvJ8kYSFYV3N4l1viK2MCgU1vgIZTg/IN9J11I5fnnpuxAQTiNk6JMha59iRb7L
+    3pzPKJ+W6szxBP4AQ5dA3TcJ8xuGgzVEM6H6Qgr93MyppK1GxM9xekj9gkphoxjF
+    V9X5ypWDGod5Lj8akIvGHNFlk2wpVQ8CAwEAAaOBhzCBhDAOBgNVHQ8BAf8EBAMC
+    BaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMAwGA1UdEwEB/wQCMAAw
+    HQYDVR0OBBYEFIfblVWB4UYQHZXgEc26QuZtt+FPMCYGA1UdEQQfMB2CG2t1YmVy
+    bmV0ZXMtZGFzaGJvYXJkLms4cy5pbzANBgkqhkiG9w0BAQsFAAOCAQEAMiKMn1iS
+    /iwFOawWCRZh32wttTa6+AYqxo0SDsFpYK5C7n5W0CfLj5+6pwgSsJoi1mc4C7ob
+    DK0G/JZTKuZpt/C/XXjrmcBu5NfJb1+vmykDUEZwMHYeqS2yGRY8VJg78yb31omP
+    MugD6tYXlzEw+0Ou4/l1DjFudNuSRujEUxu10VwezCDwS1J6NsGFUUiKTB+bc4Qg
+    VeAPeV87E95GGudZnB4YF1T+W22Q2FNC7N0fK4eNb/FgVXyWu+9NIBc6x4jEvCo4
+    PGCQgcoIkDmyncWrXQIuAQoa44c7cKG5h3BKt2QsTdnCG24ToLQuG96TZrYWfK/6
+    6JuELrg67lCmKw==
+    -----END CERTIFICATE-----
+  key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEAsKdQv45xwQN6j4SMz9L3zy5TCBLUbuHmYJBV+wRu3FynHZRo
+    isoqGKzZPXsE9Nc4Y/YlK/gdmHlgMBahsg2Z+V3M9YKF+YKiVFAntLIzqXtH+Mjy
+    AXBvHdhAxJwdjoywpjB1FbHcG0UN0Veju6NsZSjH2F7pqvwmsbdwOc9xgLtMxZTY
+    UL6PfzI828nyRhIVhXc3iXW+IrYwKBTW+AhlOD8g30nXUjl+eem7EBBOI2TokyFr
+    n2JFvsvenM8on5bqzPEE/gBDl0DdNwnzG4aDNUQzofpCCv3czKmkrUbEz3F6SP2C
+    SmGjGMVX1fnKlYMah3kuPxqQi8Yc0WWTbClVDwIDAQABAoIBACs0AE+Y6sEltKe8
+    5yM8mVaWIcBruoCTxt/+7MhDQUmrb0OQtDCdWMZIH6klmQS4ThZEcLrcJ4DOznN0
+    VX9STEHsat/wWAu5ozGzmMJcgr4EZIm3u1gWw1YtOUncVG40gk9isn/ny8jvjn2Q
+    TX7qbOwgmR+VttgWavAzyMKatUuiGs/an9ppZunHCmTZA0Cg79T8uTR/QtnLfeji
+    wtTC90nkqwz43e4zUnH/48E7qsI47zD+azl0DoeAqYp4E1KgLinlJISV1dTWmkGB
+    BR2odJm7SYw4Ns/7dB/512Ol46HwoloKS60f9hzKGbHI2DrKf/ZjvhSZgHYLXjrR
+    /Q5l4SECgYEAxf/zfTlnPrIffyPU/PPVQSgtpmcpi3kuxgtYi9f+keInLQ+B99/K
+    3kDfSIBGRszzXRX3ACBf8SZem0UipNeTMRdbTE/YsudGdlwfr5craS523LIT5mF9
+    kVFLqjoV3gnByzTmhKSPawO5EvMMzvsoSb3KcHa/OQCxjjd2zN0XwA0CgYEA5Gab
+    CRsngY+U4Ow6FW5IEQcHiRCHfx6ZPnh336w+iFFd1LxcLMRAvmu7EgI43/POGKaq
+    1Onn0S83QsgHBAaRrCHCNoMvIRiOYZ1Wo+Gr4lhTQsGd3EQTC1jmY8cepBNeu58q
+    AIguziTC0maPCPYeVVd0iBxwukH+s/DhjYAixosCgYAejN+E8tZ7VgCGHYE/hl/h
+    LdHdWw2N96S/6gA/k5Qz7jEdQsdK97zVjizlguVVB0qFkl4KJvSmwMTYMFKoHJsZ
+    eAEeRTOqZwT4Pj6lWS3ZjNHKO6/WXDSDt4d1PIEjQV4lfIQU808ts+VahyXyyc3t
+    ktspfykCIplC2Ev8UCDaAQKBgQCRLzPfzvYG4nk1nJOzab2/rSM6Glq3EIFC95rj
+    gH7jci1d/DnvbvTk1mA8q1Lx8O2SN+ehnenwy72p4rKq+W4B6BenRS5hMFXZcQVQ
+    +TOklpaeearaCB++98zDoiA1FecDBsLRQb/W5AE/c1f6z1Aq2YPGvaVekHLSeQ03
+    QDtazwKBgQCBVN2cdAG2Y/Nmac8t741U+XdGFvF1DOHcr1HEvLR4XYC7pLS+8OAF
+    VTWkBVaTD/RJ1F3e33m+wL1UD+69OeaflJcq/+WzanGXknst7fbX6KhYL8BXJ2xx
+    0OQxI+1Q6prrRhyp+A4OnZRJS01doFzFDiI4yl7mEeBx8fLX40iLEw==
+    -----END RSA PRIVATE KEY-----

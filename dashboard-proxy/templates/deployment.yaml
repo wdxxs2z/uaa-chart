@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        name: {{ template "fullname" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - --listen=0.0.0.0:3000
+        - --discovery-url={{ .Values.oidc.url }}                # https://uaa.k8s.io/oauth/token
+        - --client-id={{ .Values.oidc.client_id }}
+        - --client-secret={{ .Values.oidc.client_secret }}
+        - --redirection-url={{ .Values.oidc.redirection_url }}  # https://kubernetes-dashboard.k8s.io
+        - --enable-refresh-tokens=true
+        - --encryption-key=MsVRjD36bfAxfBvHUKUjXOTPXaItDThn     # 32 bytes string
+        - --upstream-url={{ .Values.oidc.upstream_url }}        # https://kubernetes-dashboard.kube-system.svc.cluster.local
+        - --resources=uri=/*
+        - --skip-openid-provider-tls-verify
+        - --cookie-domain={{ .Values.oidc.cookie_domain }}      # kubernetes-dashboard.k8s.io
+        ports:
+        - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /oauth/health
+            port: 3000
+          initialDelaySeconds: 3
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /oauth/health
+            port: 3000
+          initialDelaySeconds: 3
+          timeoutSeconds: 2

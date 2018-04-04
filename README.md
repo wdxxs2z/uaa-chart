@@ -241,7 +241,22 @@ traefik-ingress-controller-65pff          1/1       Running   0          5h
 traefik-ingress-controller-f655k          1/1       Running   0          5h
 ```
 
-### keycloak-proxy to dashboard
+## keycloak-proxy to dashboard
+
+Kubernetes Dashboard is a UI to manage our Kubernetes clusters. we can use a reverse proxy with OpenID Connect to protect the dashboard.
+
+* CloudFoundry UAA (OpenID Connect identity provider)
+* keycloak-proxy (OpenID Connect reverse proxy)
+* kube-apiserver (Kubernetes API server)
+* Kubernetes Dashboard
+
+### Install keycloak-proxy with helm chart
+
+1. Please config the dashboard-proxy values
+
+2. helm install --namespace auth-system -n proxy dashboard-proxy
+
+### Before install the proxy,we must know that: 
 
 1. If you want login dashboard with uaa,you should deploy the keycloak-proxy,but the keycloak-proxy has some problem: uaa has muti or array aud claim -> [clientid,...],the keycloak-proxy is string,so we must skip it.
 

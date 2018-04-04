@@ -109,12 +109,12 @@ data:
           id: login
           override: true
           scope: oauth.approvals
-          secret: {{ .Values.clients.login.secret | b64enc }}
+          secret: {{ .Values.clients.login.secret }}
         admin:
           authorized-grant-types: client_credentials
           authorities: openid,clients.read,clients.write,clients.secret,uaa.admin,scim.read,scim.write,password.write
           id: admin
-          secret: {{ .Values.clients.admin.secret | b64enc }}
+          secret: {{ .Values.clients.admin.secret }}
 {{ toYaml .Values.clients.self | indent 8 }}
       user:
         authorities:
