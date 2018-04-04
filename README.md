@@ -320,3 +320,15 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 7 Login with uaa and verify the header token,you can view the kc-access in your cookie.
+
+Tap the https://kubernetes-dashboard.k8s.io and redirect to the uaa login page.
+
+![login](https://github.com/wdxxs2z/uaa-chart/blob/master/images/login.JPG)
+
+Input your username and password,jump to the dashboard with kc-access&kc-state token.
+
+![dashboard](https://github.com/wdxxs2z/uaa-chart/blob/master/images/dashboard.JPG)
+
+View the token,and decode it.
+
+![cookies](https://github.com/wdxxs2z/uaa-chart/blob/master/images/cookies.JPG)
