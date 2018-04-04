@@ -2,6 +2,8 @@
 
 UAA can support openid protocol,so we can use it in k8s with oidc.
 
+* [1.Config mysql and install mysql](#Mysql chart install)
+
 ## Mysql chart install
 
 ```
