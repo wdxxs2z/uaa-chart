@@ -34,6 +34,10 @@ UAA can support openid protocol,so we can use it in k8s with oidc.
 | `uaa.ssl.cakey`|The CA key content|xxxxxx|
 | `uaa.ssl.tls.cert`|The uaa.k8s.io or login.k8s.io cert|xxxxxx|
 | `uaa.ssl.tls.key`|The client key content|xxxxxx|
+| `smtp.*`|When registry uaa user,email will be used|localhost,2525...|
+| `ldap.*`|LDAP configure|base,groups...|
+| `clients.*`|UAA oauth2 application clients|kubernetes...|
+
 
 ### 1. Prepare our database, provide mysql chart install
 

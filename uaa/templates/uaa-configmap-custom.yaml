@@ -244,14 +244,10 @@ data:
       serviceProviderKey: ''
       serviceProviderKeyPassword: ''
       selfServiceLinksEnabled: true
+{{- if .Values.smtp }}
     smtp:
-      host: localhost
-      port: 2525
-      user:
-      password:
-      from_address:
-      auth: false
-      starttls: false
+{{ toYaml .Values.smtp | indent 6 }}
+{{- end }}
 {{- if .Values.ldap }}
     ldap:
 {{ toYaml .Values.ldap | indent 6 }}

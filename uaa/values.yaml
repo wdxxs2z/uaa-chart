@@ -24,6 +24,23 @@ tomcat:
   # if remoteDebug enabled,please use it.
   # catalinaOpts: "-Xmx768m -XX:MaxPermSize=256m -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
 
+ingress:
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/secure-backends: "true"
+  enabled: true
+  tls:
+    - secretName: uaa-auth-secret
+  hosts:
+    - uaa.k8s.io
+    - login.k8s.io
+
+httpPort: 8080
+httpsPort: 8443
+serviceType: NodePort
+
+spring_profiles: mysql#,ldap
+
 datasource:
   host: database-mysql
   port: 3306
@@ -31,7 +48,14 @@ datasource:
   username: admin
   password: changeme
 
-spring_profiles: mysql#,ldap
+smtp:
+  host: localhost
+  port: 2525
+  user:
+  password:
+  from_address:
+  auth: false
+  starttls: false
 
 ldap:
   ldapdebug: Ldap configured through UAA
@@ -61,24 +85,7 @@ ldap:
     searchSubtree: 'true'
     maxSearchDepth: '1'
 
-ingress:
-  annotations:
-    kubernetes.io/tls-acme: "true"
-    ingress.kubernetes.io/secure-backends: "true"
-  enabled: true
-  tls:
-    - secretName: uaa-auth-secret
-  hosts: 
-    - uaa.k8s.io
-    - login.k8s.io
-
-httpPort: 8080
-httpsPort: 8443
-serviceType: NodePort
-
 clients:
-  kubernetes:
-    secret: changeme
   login:
     secret: changeme
   admin:
