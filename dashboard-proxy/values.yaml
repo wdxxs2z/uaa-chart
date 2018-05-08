@@ -8,7 +8,7 @@ replicaCount: 1
 oidc:
   url: https://uaa.k8s.io/oauth/token
   client_id: kubernetes
-  client_secret: kubernetes-password
+  client_secret: k8s-changeme
   redirection_url: https://kubernetes-dashboard.k8s.io
   upstream_url: https://kubernetes-dashboard.kube-system.svc.cluster.local
   cookie_domain: kubernetes-dashboard.k8s.io

@@ -2,10 +2,10 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: cluster-init-jojo
+  name: cluster-init-admin
 subjects:
 - kind: User
-  name: https://uaa.k8s.io/oauth/token#jojo@k8s.io
+  name: https://uaa.k8s.io/oauth/token#admin
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole

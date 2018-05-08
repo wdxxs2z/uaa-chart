@@ -2,10 +2,10 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "mysql.fullname" . }}
+  name: {{ template "mariadb.fullname" . }}
   labels:
-    app: {{ template "mysql.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "mariadb.name" . }}
+    chart: {{ template "mariadb.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:

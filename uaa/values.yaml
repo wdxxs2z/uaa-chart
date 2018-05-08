@@ -42,7 +42,7 @@ serviceType: NodePort
 spring_profiles: mysql#,ldap
 
 datasource:
-  host: database-mysql
+  host: database-mariadb
   port: 3306
   dbname: uaa
   username: admin
@@ -105,6 +105,14 @@ clients:
 scim:
   admin:
     password: adminpassword
+
+logout:
+  redirect:
+    parameter:
+      disable: false
+      whitelist:
+      - https://kubernetes-dashboard.k8s.io/
+    url: "/login"
 
 uaa:
   ssl:
