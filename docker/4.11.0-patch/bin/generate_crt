@@ -28,7 +28,7 @@ EOL
     echo "Generating uaa key ..."
     openssl genrsa -out $work_dir/uaa.key 2048
     echo "Generating uaa csr ..."
-    openssl req -new -key $work_dir/uaa.key -out uaa.csr -subj "/CN=$service_name" -config $work_dir/openssl.cnf
+    openssl req -new -key $work_dir/uaa.key -out $work_dir/uaa.csr -subj "/CN=$service_name" -config $work_dir/openssl.cnf
     echo "Generating uaa crt ..."
     openssl x509 -req -in $work_dir/uaa.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out $work_dir/uaa.crt -days 3650 -extensions v3_req -extfile $work_dir/openssl.cnf
     rm $work_dir/uaa.csr
