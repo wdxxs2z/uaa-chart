@@ -3,10 +3,10 @@
 ## BEGIN CERTIFICATE INSTALLATION
 
 #define the certificate to import
-CERT_FILE=/usr/local/uaa/config/$1
+CERT_FILE=$1
 
 #define the key store
-KEY_STORE_FILE=/usr/local/uaa/config/uaa_keystore.p12
+KEY_STORE_FILE=/usr/local/uaa/uaa_keystore.p12
 
 #define the alias
 CERT_ALIAS=uaa_ssl_cert
