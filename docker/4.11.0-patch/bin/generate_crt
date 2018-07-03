@@ -8,7 +8,9 @@ service_name=${SERVICE_NAME}
 if [ -f $ca_crt  ]; then
     echo "Generating certificate ......"
     pem=$work_dir/uaa.pem
-    ssl_args=(--ssl --sslCAFile $ca_crt --sslPEMKeyFile $pem)
+    cp $ca_crt $work_dir/
+    cp $ca_key $work_dir/
+    ssl_args=(--ssl --sslCAFile $work_dir/ca.crt --sslPEMKeyFile $pem)
 
 cat > $work_dir/openssl.cnf <<EOL
 [req]
@@ -30,8 +32,10 @@ EOL
     echo "Generating uaa csr ..."
     openssl req -new -key $work_dir/uaa.key -out $work_dir/uaa.csr -subj "/CN=$service_name" -config $work_dir/openssl.cnf
     echo "Generating uaa crt ..."
-    openssl x509 -req -in $work_dir/uaa.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out $work_dir/uaa.crt -days 3650 -extensions v3_req -extfile $work_dir/openssl.cnf
+    openssl x509 -req -in $work_dir/uaa.csr -CA $work_dir/ca.crt -CAkey $work_dir/ca.key -CAcreateserial -out $work_dir/uaa.crt -days 3650 -extensions v3_req -extfile $work_dir/openssl.cnf
     rm $work_dir/uaa.csr
+    rm $work_dir/ca.crt
+    rm $work_dir/ca.key
     cat $work_dir/uaa.crt $work_dir/uaa.key > $pem
     rm $work_dir/uaa.key $work_dir/uaa.crt
 fi
