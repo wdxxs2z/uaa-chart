@@ -3,7 +3,7 @@ set -e
 
 echo "uaa-pre-setup-dirs - starting at `date`"
 
-CONF_DIR=/usr/local/uaa/config
+CONF_DIR=/usr/local/uaa
 CACHE_DIR=/usr/local/uaa/cert-cache
 TRUST_STORE_FILE=$CACHE_DIR/cacerts
 CERT_CACHE_FILE=$CACHE_DIR/cacerts-cache.txt
