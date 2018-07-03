@@ -50,7 +50,7 @@ helm install -n database --namespace auth-system mysql
 The default domain is "\*.k8s.io", and the cert must be modify.
 
 ```
-cat >openssl.cnf <<EOL
+cat > openssl.cnf <<EOL
 [req]
 req_extensions = v3_req
 distinguished_name = req_distinguished_name
@@ -91,7 +91,7 @@ EOL
     echo "Generating uaa tls key ..."
     openssl genrsa -out tls.key 2048
     echo "Generating uaa tls csr ..."
-    openssl req -new -key ingress.key -out tls.csr -subj "/CN=uaa.k8s.io,login.k8s.io" -config openssl.cnf
+    openssl req -new -key tls.key -out tls.csr -subj "/CN=uaa.k8s.io,login.k8s.io" -config openssl.cnf
     echo "Generating uaa tls crt ..."
     openssl x509 -req -in tls.csr -CA $ca_crt -CAkey $ca_key -CAcreateserial -out tls.crt -days 3650 -extensions v3_req -extfile openssl.cnf
 ```
@@ -133,7 +133,6 @@ curl -k 'https://uaa.k8s.io/oauth/token' -i -X POST \
   -d 'username=admin' \
   -d 'password={admin_password}' \
   -d 'grant_type=password' \
-  -d 'token_format=opaque' \ # if you want get all token fomart, remove the line.
   -d 'response_type=id_token+token'
 ```
 
@@ -268,16 +267,39 @@ if err != nil || !found {
 }
 audience := audiences[0]
 ```
-2. Before,if we set **--oidc-username-claim=email**,email_verified claim must be in our token.but recently,email_verified claim is not required for JWT validation(https://github.com/kubernetes/kubernetes/pull/61508),if it merage to next k8s release,we can use it with uaa.Now we only use **--oidc-username-claim=user_name**
+2. Fix proxy request uaa token take more time issue
+```
+hc := &http.Client{
+        Transport: &http.Transport{
+                Proxy: func(_ *http.Request) (*url.URL, error) {
+                        if r.config.OpenIDProviderProxy != "" {
+                                idpProxyURL, err := url.Parse(r.config.OpenIDProviderProxy)
+                                if err != nil {
+                                        r.log.Warn("invalid proxy address for open IDP provider proxy", zap.Error(err))
+                                        return nil, nil
+                                }
+                                return idpProxyURL, nil
+                        }
+
+                        return nil, nil
+                },
+                TLSClientConfig: &tls.Config{
+                        InsecureSkipVerify: r.config.SkipOpenIDProviderTLSVerify,
+                },
+        },
+        //default is time.Second * 10, but the uaa may take more time response the token, so fix to 30s.
+        Timeout: time.Second * 30,
+}
+```
+3. Before,if we set **--oidc-username-claim=email**,email_verified claim must be in our token.but recently,email_verified claim is not required for JWT validation https://github.com/kubernetes/kubernetes/pull/61508 ,if it merage to next k8s release,we can use it with uaa.Now we only use **--oidc-username-claim=user_name**.If the kubernetes version is 1.11, you can use **--oidc-username-claim=email**
 
 ```
  - --oidc-issuer-url=https://uaa.k8s.io/oauth/token
  - --oidc-username-claim=user_name
- - --oidc-username-prefix=https://uaa.k8s.io/oauth/token#
  - --oidc-client-id=kubernetes
  - --oidc-ca-file=/etc/kubernetes/pki/ca.crt
 ```
-3. UAA set,we must define a client,and the authorized-grant-types must have password,refresh_token,client_credentials,authorization_code.The redirect uri such as: https://kubernetes-dashboard.k8s.io
+4. UAA set,we must define a client,and the authorized-grant-types must have password,refresh_token,client_credentials,authorization_code.The redirect uri such as: https://kubernetes-dashboard.k8s.io
 
 ```
 oauth:
@@ -293,7 +315,7 @@ oauth:
       redirect-uri: https://kubernetes-dashboard.k8s.io
       secret: k8s-changeme
 ```
-4. Config the keycloak-proxy
+5. Config the keycloak-proxy
 
 ```
 args:
@@ -308,15 +330,16 @@ args:
   - --resources=uri=/*
   - --skip-openid-provider-tls-verify
   - --cookie-domain=kubernetes-dashboard.k8s.io
+  - --openid-provider-timeout=90s
 ```
-5. Create a test user with uaac
+6. Create a test user with uaac
 
 ```
 uaac token client get admin -s Y2hhbmdlbWU=
 
 uaac user add tony@k8s.io --emails tony@k8s.io
 ```
-6. Bind a user with role
+7. Bind a user with role, if use the kubernetes 1.11,please replace the **name: https://uaa.k8s.io/oauth/token#tony@k8s.io** to **name: tony@k8s.io**.
 
 ```
 ---
