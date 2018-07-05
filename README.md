@@ -326,7 +326,7 @@ args:
   - --redirection-url=https://kubernetes-dashboard.k8s.io
   - --enable-refresh-tokens=true
   - --encryption-key=MsVRjD36bfAxfBvHUKUjXOTPXaItDThn
-  - --upstream-url=https://kubernetes-dashboard.kube-system.svc.cluster.local
+  - --upstream-url=https://kubernetes-dashboard.kube-system
   - --resources=uri=/*
   - --skip-openid-provider-tls-verify
   - --cookie-domain=kubernetes-dashboard.k8s.io
